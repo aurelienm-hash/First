@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { editImage } from "@/app/actions"
 import { Loader2, Upload, Download } from "lucide-react"
 import { BeforeAfterSlider } from "./before-after-slider"
 
@@ -32,20 +31,25 @@ export function ImageEditForm() {
       const img = new Image()
 
       img.onload = () => {
-        // Determine optimal size (max 1024x1024 but compress larger images more)
-        const maxSize = 1024
+        // Compression plus agressive pour rester sous 1MB
         const originalSize = Math.max(img.width, img.height)
 
-        // Calculate compression ratio based on original size
-        let targetSize = maxSize
-        let quality = 0.85 // Default quality
+        // Taille cible plus petite pour garantir < 1MB
+        let targetSize = 512 // Taille par défaut plus petite
+        let quality = 0.6 // Qualité plus basse par défaut
 
-        if (originalSize > 2048) {
-          targetSize = 800 // More aggressive compression for very large images
-          quality = 0.75
-        } else if (originalSize > 1536) {
-          targetSize = 900
-          quality = 0.8
+        if (originalSize > 3000) {
+          targetSize = 400
+          quality = 0.5
+        } else if (originalSize > 2000) {
+          targetSize = 450
+          quality = 0.55
+        } else if (originalSize > 1500) {
+          targetSize = 500
+          quality = 0.6
+        } else {
+          targetSize = 600
+          quality = 0.7
         }
 
         // Set canvas to square dimensions
@@ -71,14 +75,55 @@ export function ImageEditForm() {
           // Draw the image centered on the canvas
           ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
 
-          // Convert canvas to base64
-          const dataUrl = canvas.toDataURL("image/png", quality)
+          // Fonction pour ajuster la qualité jusqu'à obtenir < 1MB
+          const tryCompress = (currentQuality: number): string => {
+            const dataUrl = canvas.toDataURL("image/jpeg", currentQuality) // Utiliser JPEG pour une meilleure compression
+            const sizeInBytes = (dataUrl.length * 3) / 4
+            const sizeInMB = sizeInBytes / (1024 * 1024)
+
+            console.log(`Tentative compression: qualité ${currentQuality}, taille ${sizeInMB.toFixed(2)}MB`)
+
+            // Si l'image est encore trop lourde et qu'on peut réduire la qualité
+            if (sizeInMB > 0.8 && currentQuality > 0.3) {
+              return tryCompress(currentQuality - 0.1)
+            }
+
+            // Si l'image est encore trop lourde, réduire la taille
+            if (sizeInMB > 0.8 && targetSize > 300) {
+              targetSize = Math.max(300, targetSize - 50)
+              canvas.width = targetSize
+              canvas.height = targetSize
+
+              ctx.fillStyle = "white"
+              ctx.fillRect(0, 0, targetSize, targetSize)
+
+              const newScale = Math.min(targetSize / img.width, targetSize / img.height)
+              const newScaledWidth = img.width * newScale
+              const newScaledHeight = img.height * newScale
+              const newX = (targetSize - newScaledWidth) / 2
+              const newY = (targetSize - newScaledHeight) / 2
+
+              ctx.drawImage(img, newX, newY, newScaledWidth, newScaledHeight)
+
+              return canvas.toDataURL("image/jpeg", currentQuality)
+            }
+
+            return dataUrl
+          }
+
+          const finalDataUrl = tryCompress(quality)
+          const finalSizeInBytes = (finalDataUrl.length * 3) / 4
+          const finalSizeInMB = finalSizeInBytes / (1024 * 1024)
 
           console.log(
-            `Image compressed: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${((dataUrl.length * 0.75) / 1024 / 1024).toFixed(2)}MB (estimated)`,
+            `Image finale: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${finalSizeInMB.toFixed(2)}MB (${targetSize}x${targetSize})`,
           )
 
-          resolve(dataUrl)
+          if (finalSizeInMB > 1) {
+            reject(new Error(`Image encore trop lourde après compression: ${finalSizeInMB.toFixed(2)}MB`))
+          } else {
+            resolve(finalDataUrl)
+          }
         } else {
           reject(new Error("Failed to get canvas context"))
         }
@@ -104,12 +149,12 @@ export function ImageEditForm() {
     const file = e.target.files?.[0]
     if (file) {
       // Validate file size (increased limit since we compress)
-      if (file.size > 10 * 1024 * 1024) {
-        setError("L'image doit faire moins de 10MB.")
+      if (file.size > 20 * 1024 * 1024) {
+        setError("L'image doit faire moins de 20MB.")
         return
       }
 
-      // Accept both PNG and JPEG (we'll convert to PNG)
+      // Accept both PNG and JPEG (we'll convert to JPEG for better compression)
       if (!file.type.includes("png") && !file.type.includes("jpeg") && !file.type.includes("jpg")) {
         setError("Veuillez uploader une image PNG ou JPEG.")
         return
@@ -154,10 +199,16 @@ export function ImageEditForm() {
       formData.append("imageData", processedImageData)
       formData.append("stoneColor", selectedColor)
 
-      const result = await editImage(formData)
+      // Use API route instead of Server Action
+      const response = await fetch("/api/edit-image", {
+        method: "POST",
+        body: formData,
+      })
 
-      if (result.error) {
-        setError(result.error)
+      const result = await response.json()
+
+      if (!response.ok || result.error) {
+        setError(result.error || "Une erreur s'est produite")
       } else {
         setResultImage(result.imageUrl)
       }
@@ -225,7 +276,9 @@ export function ImageEditForm() {
                   )}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  {processing ? "Compression en cours..." : "PNG ou JPEG, max 10MB (compression automatique)"}
+                  {processing
+                    ? "Compression intelligente en cours..."
+                    : "PNG ou JPEG, max 20MB (compression automatique < 1MB)"}
                 </p>
               </div>
 

@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/api/edit-image/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
