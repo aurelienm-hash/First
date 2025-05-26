@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Loader2, Upload, Download } from "lucide-react"
@@ -23,6 +23,8 @@ export function ImageEditForm() {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState("Light Grey")
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const processImageForOpenAI = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -246,11 +248,12 @@ export function ImageEditForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-md mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Visualiseur de Revêtement</h1>
-          <p className="text-gray-600 text-sm">Visualisez votre terrasse avec un revêtement résine-gravier</p>
+          <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-2 w-32 h-32 object-contain" />
+          {processing && <GlowAnimation />}
+          <p className="text-gray-600 text-base font-medium">L'IA qui sublime votre terrasse en un clic</p>
         </div>
 
         {!imagePreview ? (
@@ -267,19 +270,23 @@ export function ImageEditForm() {
                     accept="image/png,image/jpeg,image/jpg"
                     onChange={handleImageChange}
                     disabled={processing}
-                    className="w-full file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer disabled:opacity-50"
+                    className="hidden"
+                    capture="environment"
+                    ref={fileInputRef}
                   />
-                  {processing ? (
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    disabled={processing}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <Upload className="h-5 w-5" />
+                    Prendre une photo ou Choisir une photo
+                  </Button>
+                  {processing && (
                     <Loader2 className="absolute right-3 top-3 h-5 w-5 text-blue-600 animate-spin" />
-                  ) : (
-                    <Upload className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
                   )}
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  {processing
-                    ? "Compression intelligente en cours..."
-                    : "PNG ou JPEG, max 20MB (compression automatique < 1MB)"}
-                </p>
               </div>
 
               <div>
@@ -373,3 +380,24 @@ export function ImageEditForm() {
     </div>
   )
 }
+
+function GlowAnimation() {
+  return (
+    <div className="relative flex justify-center">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-8">
+        <span className="block w-full h-full rounded-full bg-gradient-to-r from-orange-500 via-pink-500 to-blue-500 blur-2xl opacity-70 animate-glow" />
+      </div>
+    </div>
+  )
+}
+
+<style jsx global>{`
+  @keyframes glow {
+    0% { filter: blur(16px) brightness(1.1); opacity: 0.7; }
+    50% { filter: blur(24px) brightness(1.5); opacity: 1; }
+    100% { filter: blur(16px) brightness(1.1); opacity: 0.7; }
+  }
+  .animate-glow {
+    animation: glow 2s infinite linear;
+  }
+`}</style>
