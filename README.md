@@ -1,30 +1,120 @@
-# Openai image edit
+# Visualiseur de Revêtement
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+Application Next.js pour visualiser des revêtements de terrasse avec l'IA OpenAI.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/quemalfd-3674s-projects/v0-openai-image-edit-0k)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/UyQfLJTT7VE)
+## 🚀 Déploiement sur Netlify
 
-## Overview
+### 1. Préparer le repository GitHub
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+\`\`\`bash
+git add .
+git commit -m "Ready for Netlify deployment"
+git push origin main
+\`\`\`
 
-## Deployment
+### 2. Configurer Netlify
 
-Your project is live at:
+1. Allez sur [netlify.com](https://netlify.com)
+2. Cliquez "New site from Git"
+3. Choisissez GitHub et sélectionnez votre repository
+4. Build settings (automatiquement détectés) :
+   - **Build command** : `npm run build`
+   - **Publish directory** : `.next`
 
-**[https://vercel.com/quemalfd-3674s-projects/v0-openai-image-edit-0k](https://vercel.com/quemalfd-3674s-projects/v0-openai-image-edit-0k)**
+### 3. Configurer les variables d'environnement
 
-## Build your app
+Dans Netlify Dashboard → Site settings → Environment variables :
 
-Continue building your app on:
+- **Key** : `OPENAI_API_KEY`
+- **Value** : Votre clé API OpenAI (sk-...)
+- **Scopes** : All deploy contexts
 
-**[https://v0.dev/chat/projects/UyQfLJTT7VE](https://v0.dev/chat/projects/UyQfLJTT7VE)**
+### 4. Tester le déploiement
 
-## How It Works
+Après le déploiement, testez avec :
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+\`\`\`bash
+npm run deploy-test https://votre-site.netlify.app
+\`\`\`
+
+## 🧪 Tests en développement
+
+### Test local
+\`\`\`bash
+npm run dev
+npm run test-api
+\`\`\`
+
+### Test de l'API OpenAI
+Visitez : `http://localhost:3000/api/test-openai`
+
+### Health check
+Visitez : `http://localhost:3000/api/health`
+
+## 📋 Checklist de déploiement
+
+### Avant le déploiement
+- [ ] Clé API OpenAI valide
+- [ ] Code testé localement
+- [ ] Repository GitHub à jour
+
+### Configuration Netlify
+- [ ] Site connecté au repository GitHub
+- [ ] Variable `OPENAI_API_KEY` configurée
+- [ ] Build settings corrects
+
+### Après le déploiement
+- [ ] Site accessible
+- [ ] Test API réussi (`/api/test-openai`)
+- [ ] Upload d'image fonctionne
+- [ ] Traitement d'image fonctionne
+
+## 🔧 Développement
+
+\`\`\`bash
+# Installation
+npm install
+
+# Développement
+npm run dev
+
+# Test de l'API
+npm run test-api
+
+# Build
+npm run build
+\`\`\`
+
+## 📁 Structure du projet
+
+\`\`\`
+├── app/
+│   ├── actions.ts          # Server actions
+│   ├── page.tsx           # Page principale
+│   └── api/
+│       ├── health/        # Health check
+│       └── test-openai/   # Test API OpenAI
+├── components/
+│   ├── image-edit-form.tsx
+│   └── before-after-slider.tsx
+├── scripts/
+│   ├── test-api.js        # Test local
+│   └── deploy-test.js     # Test déploiement
+├── next.config.js         # Configuration Next.js
+├── netlify.toml          # Configuration Netlify
+└── package.json
+\`\`\`
+
+## 🆘 Dépannage
+
+### Erreur "OPENAI_API_KEY not configured"
+- Vérifiez que la variable est bien définie dans Netlify
+- Redéployez le site après avoir ajouté la variable
+
+### Erreur "Invalid API key"
+- Vérifiez que votre clé OpenAI est valide
+- Testez la clé avec : `curl -H "Authorization: Bearer YOUR_KEY" https://api.openai.com/v1/models`
+
+### Site ne se charge pas
+- Vérifiez les logs de build dans Netlify
+- Assurez-vous que `next.config.js` et `netlify.toml` sont corrects
