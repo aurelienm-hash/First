@@ -126,30 +126,52 @@ async function processImageForOpenAI(file: File): Promise<Buffer> {
     const img = new Image()
 
     img.onload = () => {
-      // Set canvas to square dimensions (1024x1024 max)
-      const size = Math.min(1024, Math.max(img.width, img.height))
-      canvas.width = size
-      canvas.height = size
+      // Determine optimal size (max 1024x1024 but compress larger images more)
+      const maxSize = 1024
+      const originalSize = Math.max(img.width, img.height)
+
+      // Calculate compression ratio based on original size
+      let targetSize = maxSize
+      let quality = 0.85 // Default quality
+
+      if (originalSize > 2048) {
+        targetSize = 800 // More aggressive compression for very large images
+        quality = 0.75
+      } else if (originalSize > 1536) {
+        targetSize = 900
+        quality = 0.8
+      }
+
+      // Set canvas to square dimensions
+      canvas.width = targetSize
+      canvas.height = targetSize
 
       // Fill with white background
       if (ctx) {
         ctx.fillStyle = "white"
-        ctx.fillRect(0, 0, size, size)
+        ctx.fillRect(0, 0, targetSize, targetSize)
 
         // Calculate scaling and positioning to center the image
-        const scale = Math.min(size / img.width, size / img.height)
+        const scale = Math.min(targetSize / img.width, targetSize / img.height)
         const scaledWidth = img.width * scale
         const scaledHeight = img.height * scale
-        const x = (size - scaledWidth) / 2
-        const y = (size - scaledHeight) / 2
+        const x = (targetSize - scaledWidth) / 2
+        const y = (targetSize - scaledHeight) / 2
+
+        // Enable image smoothing for better quality
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = "high"
 
         // Draw the image centered on the canvas
         ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
 
-        // Convert canvas to blob
+        // Convert canvas to blob with compression
         canvas.toBlob(
           (blob) => {
             if (blob) {
+              console.log(
+                `Image compressed: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(blob.size / 1024 / 1024).toFixed(2)}MB`,
+              )
               blob.arrayBuffer().then((buffer) => {
                 resolve(Buffer.from(buffer))
               })
@@ -158,7 +180,7 @@ async function processImageForOpenAI(file: File): Promise<Buffer> {
             }
           },
           "image/png",
-          1.0,
+          quality, // Apply compression quality
         )
       } else {
         reject(new Error("Failed to get canvas context"))

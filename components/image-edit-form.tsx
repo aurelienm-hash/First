@@ -26,9 +26,9 @@ export function ImageEditForm() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // Validate file size (4MB limit)
-      if (file.size > 4 * 1024 * 1024) {
-        setError("L'image doit faire moins de 4MB.")
+      // Validate file size (increased limit since we compress)
+      if (file.size > 10 * 1024 * 1024) {
+        setError("L'image doit faire moins de 10MB.")
         return
       }
 
@@ -41,6 +41,9 @@ export function ImageEditForm() {
       setError(null)
       setResultImage(null)
       setImage(file)
+
+      console.log(`Image originale: ${(file.size / 1024 / 1024).toFixed(2)}MB`)
+
       const reader = new FileReader()
       reader.onload = () => {
         setImagePreview(reader.result as string)
@@ -126,7 +129,7 @@ export function ImageEditForm() {
                   />
                   <Upload className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">PNG ou JPEG, max 4MB</p>
+                <p className="text-xs text-gray-500 mt-1">PNG ou JPEG, max 10MB (compression automatique)</p>
               </div>
 
               <div>
