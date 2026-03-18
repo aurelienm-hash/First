@@ -1,20 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { fal } from "@fal-ai/client"
 
-// Configuration pour augmenter la limite de taille
-export const maxDuration = 60
 export const dynamic = "force-dynamic"
+
+const FAL_BASE_URL = "https://queue.fal.run"
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if Fal AI API key is set
     const falKey = process.env.FAL_KEY
     if (!falKey) {
       return NextResponse.json({ error: "Fal AI API key is not configured" }, { status: 500 })
     }
-
-    // Configure fal client
-    fal.config({ credentials: falKey })
 
     const { imageData, stoneColor } = await request.json()
 
@@ -22,22 +17,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Image data and stone color are required" }, { status: 400 })
     }
 
-    // Vérifier la taille de l'image base64
-    const imageSizeInBytes = (imageData.length * 3) / 4
-    const imageSizeInMB = imageSizeInBytes / (1024 * 1024)
-
-    console.log(`Image size: ${imageSizeInMB.toFixed(2)}MB`)
-
-    if (imageSizeInMB > 10) {
-      return NextResponse.json(
-        {
-          error: `Image trop lourde: ${imageSizeInMB.toFixed(2)}MB. Veuillez réduire la qualité.`,
-        },
-        { status: 413 },
-      )
-    }
-
-    // Create the detailed prompt with the selected stone color
     const prompt = `Edit this photo of a terrace to apply a realistic resin-bound gravel surface on the terrace floor only.
 
 IMPORTANT RULES:
@@ -54,53 +33,56 @@ SURFACE DETAILS:
 
 The goal is a photorealistic visualization of a terrace resurfaced with ${stoneColor} stone-resin finish.`
 
-    // Upload the image to Fal storage
-    console.log("Uploading image to Fal storage...")
-    const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, "")
-    const buffer = Buffer.from(base64Data, "base64")
-    const blob = new Blob([buffer], { type: "image/jpeg" })
-    const imageUrl = await fal.storage.upload(new File([blob], "terrace.jpg", { type: "image/jpeg" }))
+    console.log("Submitting job to Fal AI Nano Banana 2 edit...")
 
-    console.log("Image uploaded, calling Nano Banana 2 edit endpoint...")
-    console.log("Stone color:", stoneColor)
-
-    // Call Nano Banana 2 edit endpoint
-    const result = await fal.subscribe("fal-ai/nano-banana-2/edit", {
-      input: {
+    // Submit the job to the queue (returns immediately with request_id)
+    const submitResponse = await fetch(`${FAL_BASE_URL}/fal-ai/nano-banana-2/edit`, {
+      method: "POST",
+      headers: {
+        Authorization: `Key ${falKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         prompt,
-        image_urls: [imageUrl],
-        aspect_ratio: "1:1",
+        image_urls: [imageData],
         output_format: "png",
-      },
-      logs: true,
-      onQueueUpdate: (update) => {
-        if (update.status === "IN_PROGRESS") {
-          update.logs?.forEach((log) => console.log("[Fal]", log.message))
-        }
-      },
+      }),
     })
 
-    console.log("Fal AI response received")
-
-    const outputImage = (result.data as any)?.images?.[0]?.url
-    if (!outputImage) {
-      console.error("No image in response:", result)
-      return NextResponse.json({ error: "No image data returned from Fal AI" }, { status: 500 })
+    if (!submitResponse.ok) {
+      const errorText = await submitResponse.text()
+      console.error("Fal AI submit error:", submitResponse.status, errorText)
+      return NextResponse.json(
+        { error: `Erreur Fal AI: ${errorText}` },
+        { status: submitResponse.status },
+      )
     }
 
-    console.log("Image generated successfully")
+    const result = await submitResponse.json()
+    console.log("Fal AI response keys:", Object.keys(result))
 
-    return NextResponse.json({
-      imageUrl: outputImage,
-      apiResponse: {
-        model: "nano-banana-2",
-        stoneColor: stoneColor,
-      },
-    })
+    // If sync result with images
+    if (result.images?.[0]?.url) {
+      return NextResponse.json({
+        imageUrl: result.images[0].url,
+        status: "COMPLETED",
+      })
+    }
+
+    // If async, return request_id for client polling
+    if (result.request_id) {
+      return NextResponse.json({
+        requestId: result.request_id,
+        status: "IN_QUEUE",
+      })
+    }
+
+    console.error("Unexpected response:", result)
+    return NextResponse.json({ error: "Unexpected Fal AI response" }, { status: 502 })
   } catch (error: any) {
     console.error("Error editing image:", error)
     return NextResponse.json(
-      { error: error.message || "An error occurred while processing the image" },
+      { error: error.message || "Une erreur s'est produite" },
       { status: 500 },
     )
   }

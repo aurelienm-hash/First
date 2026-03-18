@@ -117,6 +117,25 @@ export function ImageEditForm() {
     }
   }
 
+  const pollForResult = async (requestId: string): Promise<string> => {
+    const maxAttempts = 120
+    for (let i = 0; i < maxAttempts; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      const statusResponse = await fetch(`/api/edit-image/status?id=${requestId}`)
+      const statusResult = await statusResponse.json()
+
+      if (statusResult.status === "COMPLETED" && statusResult.imageUrl) {
+        return statusResult.imageUrl
+      }
+
+      if (statusResult.status === "FAILED") {
+        throw new Error(statusResult.error || "Le traitement a échoué")
+      }
+    }
+    throw new Error("Timeout: le traitement a pris trop de temps")
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!processedImageData) return
@@ -143,7 +162,16 @@ export function ImageEditForm() {
       }
 
       const result = await response.json()
-      setResultImage(result.imageUrl)
+
+      if (result.status === "COMPLETED" && result.imageUrl) {
+        setResultImage(result.imageUrl)
+      } else if (result.requestId) {
+        // Poll for the result
+        const imageUrl = await pollForResult(result.requestId)
+        setResultImage(imageUrl)
+      } else {
+        throw new Error("Réponse inattendue du serveur")
+      }
     } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors du traitement de l'image")
       console.error(err)
