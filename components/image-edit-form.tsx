@@ -69,19 +69,22 @@ CRITICAL RULES:
 - Preserve the exact same perspective, lighting, and shadows from the original photo
 - The new surface must blend naturally with the existing lighting conditions
 
-SURFACE DETAILS:
-- Material: Resin-bound gravel finish — small tightly-packed rounded natural pebbles embedded in clear resin
-- Stone color and texture: ${color.description}
-- The pebbles should be small (3-6mm), tightly packed with minimal gaps
-- The surface should look smooth and professionally installed
-- The resin binder should be barely visible, letting the natural stone color dominate
+SURFACE — THIS IS THE MOST IMPORTANT PART:
+- Material: Professional resin-bound surface (résine et moquette de pierre)
+- The aggregate is VERY FINE — granules are only 1 to 3 millimeters in diameter
+- This is NOT coarse gravel. The individual stones must be TINY, almost like coarse sand or fine granulated sugar
+- The stones are densely packed together with transparent resin filling all gaps, creating a SMOOTH, FLAT, UNIFORM surface
+- From a normal viewing distance, the surface should look like a fine-grained uniform texture, NOT like individual visible pebbles
+- Stone color: ${color.description}
+- The overall appearance is matte, smooth, and elegant — similar to fine sandpaper texture
+- NO visible large stones, NO coarse gravel look, NO loose pebble appearance
 
 LIGHTING:
 - Match the sun direction and shadow angles from the original photo
-- The gravel surface should show subtle shadow variations in any recessed areas
-- Slight specular highlights on individual pebbles where direct sunlight hits
+- The fine-grained surface should have a subtle, uniform sheen where direct sunlight hits
+- Maintain natural shadow gradients consistent with the original scene
 
-The goal is a photorealistic visualization helping a client see their terrace resurfaced with a ${color.value} stone-resin finish.`
+The goal is a photorealistic visualization of a terrace resurfaced with a ${color.value} fine resin-bound stone finish (moquette de pierre).`
 }
 
 // Sweep loading animation over the uploaded image
