@@ -13,7 +13,14 @@ fal.config({ proxyUrl: "/api/fal/proxy" })
 const DEMOS = [
   { before: "/demo-avant.jpg", after: "/demo-apres.png", label: "Allée de garage" },
   { before: "/demo-avant-2.png", after: "/demo-apres-2.png", label: "Terrasse jardin" },
+  { before: "/demo-avant-3.jpg", after: "/demo-apres-3.png", label: "Terrasse complète" },
 ]
+
+// Image used for "Je n'ai pas de photo" quick test
+const QUICK_TEST_DEMO = {
+  before: "/demo-avant-3.jpg",
+  after: "/demo-apres-3.png",
+}
 
 const STONE_COLORS = [
   {
@@ -164,8 +171,23 @@ export function ImageEditForm() {
   const [selectedColor, setSelectedColor] = useState(STONE_COLORS[0].value)
   const [showDemo, setShowDemo] = useState(false)
   const [resultReady, setResultReady] = useState(false)
+  const [quickTestLoading, setQuickTestLoading] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleQuickTest = async () => {
+    setQuickTestLoading(true)
+    setError(null)
+    setShowDemo(false)
+
+    // Fake loading for 3 seconds to simulate processing
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
+    setImagePreview(QUICK_TEST_DEMO.before)
+    setResultImage(QUICK_TEST_DEMO.after)
+    setResultReady(true)
+    setQuickTestLoading(false)
+  }
 
   const processImageForAPI = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -300,6 +322,28 @@ export function ImageEditForm() {
 
   const selectedColorObj = STONE_COLORS.find((c) => c.value === selectedColor)
 
+  // === QUICK TEST LOADING STATE ===
+  if (quickTestLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-5">
+          <div className="text-center">
+            <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
+            <GlowAnimation />
+            <p className="text-gray-500 text-sm">L'IA qui sublime votre terrasse en un clic</p>
+          </div>
+          <Card className="p-4">
+            <SweepLoader image={QUICK_TEST_DEMO.before} />
+            <div className="flex items-center justify-center gap-2 mt-3">
+              <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
+              <span className="text-sm text-gray-600">Génération de l'exemple...</span>
+            </div>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   // === LOADING STATE: sweep animation + demo carousel ===
   if (loading && imagePreview) {
     return (
@@ -418,6 +462,20 @@ export function ImageEditForm() {
                 )}
                 {processing ? "Traitement..." : "Prendre ou choisir une photo"}
               </Button>
+              <button
+                onClick={handleQuickTest}
+                disabled={quickTestLoading}
+                className="w-full mt-3 text-sm text-gray-500 hover:text-orange-600 transition-colors flex items-center justify-center gap-1.5 py-1.5"
+              >
+                {quickTestLoading ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Chargement de l'exemple...
+                  </>
+                ) : (
+                  "Je n'ai pas de photo — essayer avec un exemple"
+                )}
+              </button>
             </div>
           ) : (
             <div>
