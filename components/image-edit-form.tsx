@@ -94,6 +94,80 @@ LIGHTING:
 The goal is a photorealistic visualization of a terrace resurfaced with a ${color.value} fine resin-bound stone finish (moquette de pierre).`
 }
 
+// Rotating tips, facts, and client reviews
+const LOADING_MESSAGES = [
+  // Client reviews
+  { type: "review" as const, text: "On ne reconnaît plus notre terrasse, c'est magnifique !", author: "Marie", location: "Liège" },
+  { type: "review" as const, text: "Le résultat est exactement ce qu'on avait vu sur la visualisation. Bluffant.", author: "Paul", location: "Luxembourg" },
+  { type: "review" as const, text: "Nos voisins nous demandent tous l'adresse ! Merci Resilux.", author: "Sophie", location: "Namur" },
+  { type: "review" as const, text: "Terrasse posée en une journée, propre et sans poussière. Top.", author: "Thomas", location: "Arlon" },
+  { type: "review" as const, text: "On hésitait entre carrelage et résine. Zéro regret, la résine c'est autre chose.", author: "Catherine", location: "Bruxelles" },
+  { type: "review" as const, text: "3 ans après la pose, toujours comme neuf. Qualité au rendez-vous.", author: "Marc", location: "Wavre" },
+  { type: "review" as const, text: "L'outil de visualisation nous a convaincus. On a choisi Gris anthracite, c'est sublime.", author: "Isabelle", location: "Esch-sur-Alzette" },
+  { type: "review" as const, text: "Fini les mauvaises herbes entre les dalles. La résine a tout changé.", author: "Jean-Pierre", location: "Mons" },
+  // Product facts
+  { type: "fact" as const, text: "La moquette de pierre est 100% perméable à l'eau — fini les flaques sur votre terrasse !" },
+  { type: "fact" as const, text: "Résistant au gel, aux UV et à l'usure — votre terrasse reste belle année après année." },
+  { type: "fact" as const, text: "Entretien minimal : un simple coup de jet d'eau ou de karcher suffit." },
+  { type: "fact" as const, text: "Pose rapide en 24 à 48h — votre terrasse est praticable dès le lendemain." },
+  { type: "fact" as const, text: "Surface antidérapante, idéale autour des piscines et pour les enfants." },
+  { type: "fact" as const, text: "Plus de 20 coloris disponibles pour s'adapter à tous les styles." },
+  { type: "fact" as const, text: "Compatible avec tous les supports : béton, carrelage, asphalte, bois..." },
+  { type: "fact" as const, text: "Un revêtement écologique : les granulats sont des pierres naturelles." },
+  // Tips
+  { type: "tip" as const, text: "Astuce : prenez votre photo en plein jour pour un résultat encore plus réaliste." },
+  { type: "tip" as const, text: "Vous pouvez tester plusieurs coloris sur la même photo — essayez-les tous !" },
+  { type: "tip" as const, text: "Envie d'un devis ? Contactez-nous avec votre visualisation préférée." },
+]
+
+function RotatingMessages() {
+  const [index, setIndex] = useState(() => Math.floor(Math.random() * LOADING_MESSAGES.length))
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisible(false)
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % LOADING_MESSAGES.length)
+        setVisible(true)
+      }, 400)
+    }, 4500)
+    return () => clearInterval(interval)
+  }, [])
+
+  const msg = LOADING_MESSAGES[index]
+
+  return (
+    <div className={`transition-opacity duration-400 ${visible ? "opacity-100" : "opacity-0"}`}>
+      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+        {msg.type === "review" ? (
+          <div>
+            <div className="flex gap-0.5 mb-2">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-3.5 h-3.5 text-orange-400 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+            </div>
+            <p className="text-sm text-gray-700 italic mb-2">"{msg.text}"</p>
+            <p className="text-xs text-gray-400">— {msg.author}, {msg.location}</p>
+          </div>
+        ) : msg.type === "fact" ? (
+          <div className="flex gap-3 items-start">
+            <span className="text-lg flex-shrink-0">💡</span>
+            <p className="text-sm text-gray-600">{msg.text}</p>
+          </div>
+        ) : (
+          <div className="flex gap-3 items-start">
+            <span className="text-lg flex-shrink-0">✨</span>
+            <p className="text-sm text-gray-600">{msg.text}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // Sweep loading animation over the uploaded image
 function SweepLoader({ image }: { image: string }) {
   return (
@@ -365,6 +439,9 @@ export function ImageEditForm() {
               </span>
             </div>
           </Card>
+
+          {/* Rotating messages: reviews, facts, tips */}
+          <RotatingMessages />
 
           {/* Demo carousel while waiting */}
           <div>
