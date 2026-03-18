@@ -446,7 +446,6 @@ export function ImageEditForm() {
                 onChange={handleImageChange}
                 disabled={processing}
                 className="hidden"
-                capture="environment"
                 ref={fileInputRef}
               />
               <Button
