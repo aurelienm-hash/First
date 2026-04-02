@@ -24,96 +24,95 @@ const QUICK_TEST_DEMO = {
 
 const STONE_COLORS = [
   {
-    value: "Blanc polaire",
-    label: "Blanc polaire",
-    color: "#E8E4DF",
-    description: "white polar small rounded pebbles, very light almost white with slight cream tones",
+    value: "Blanc cassé",
+    label: "Blanc cassé",
+    color: "#F0EDE8",
+    description: "off-white smooth render finish, warm white with very slight cream undertone, uniform matte texture",
   },
   {
-    value: "Gris clair nuage",
-    label: "Gris clair nuage",
-    color: "#B0B5B8",
-    description: "light grey cloud-colored mix of white and grey small rounded pebbles",
+    value: "Gris clair",
+    label: "Gris clair",
+    color: "#C8CBCC",
+    description: "light grey smooth render finish, soft neutral grey, clean and modern matte texture",
   },
   {
     value: "Gris anthracite",
     label: "Gris anthracite",
-    color: "#5A5E62",
-    description: "dark anthracite grey mix of dark grey and white small rounded pebbles",
+    color: "#4A4E52",
+    description: "dark anthracite grey smooth render finish, deep charcoal grey, contemporary matte texture",
   },
   {
-    value: "Noir charbon",
-    label: "Noir charbon",
-    color: "#2C2C2C",
-    description: "charcoal black small rounded pebbles, very dark almost black",
+    value: "Beige sable",
+    label: "Beige sable",
+    color: "#D6C9A8",
+    description: "warm sand beige smooth render finish, natural sandy tone, elegant matte texture",
   },
   {
-    value: "Beige crème",
-    label: "Beige crème",
-    color: "#D4C4A8",
-    description: "cream beige small rounded pebbles, warm sand-like natural tone",
+    value: "Ocre doré",
+    label: "Ocre doré",
+    color: "#C8A05A",
+    description: "golden ochre smooth render finish, warm yellow-orange Mediterranean tone, matte texture",
   },
   {
-    value: "Rose corail",
-    label: "Rose corail",
-    color: "#C9A07A",
-    description: "coral pink small rounded pebbles, warm pinkish-salmon natural stone",
+    value: "Terre cuite",
+    label: "Terre cuite",
+    color: "#B8623A",
+    description: "terracotta smooth render finish, warm reddish-orange earthy tone, matte texture",
   },
   {
-    value: "Rouge de Vérone",
-    label: "Rouge de Vérone",
-    color: "#A0522D",
-    description: "Verona red small rounded pebbles, warm terracotta reddish-brown natural stone",
+    value: "Ton pierre",
+    label: "Ton pierre",
+    color: "#A89880",
+    description: "natural stone-grey smooth render finish, warm taupe-grey tone, matte texture resembling limestone",
   },
 ]
 
 function buildPrompt(color: typeof STONE_COLORS[number]) {
-  return `Edit this photo of a terrace or driveway to apply a realistic resin-bound gravel surface on the ground/floor area only.
+  return `Edit this photo of a house exterior to apply a new professional render (crépi) finish on the facade walls only.
 
 CRITICAL RULES:
-- ONLY modify the ground/floor surface (terrace, driveway, patio, pathway)
-- DO NOT alter walls, garage doors, fences, roofs, sky, trees, furniture, or any other elements
+- ONLY modify the exterior wall surfaces (facade, rendered walls)
+- DO NOT alter windows, doors, shutters, roof, gutters, ground, sky, vegetation, or any other elements
 - Preserve the exact same perspective, lighting, and shadows from the original photo
-- The new surface must blend naturally with the existing lighting conditions
+- The new render must blend naturally with the existing architectural elements and lighting conditions
 
-SURFACE — THIS IS THE MOST IMPORTANT PART:
-- Material: Professional resin-bound surface (résine et moquette de pierre)
-- The aggregate is VERY FINE — granules are only 1 to 3 millimeters in diameter
-- This is NOT coarse gravel. The individual stones must be TINY, almost like coarse sand or fine granulated sugar
-- The stones are densely packed together with transparent resin filling all gaps, creating a SMOOTH, FLAT, UNIFORM surface
-- From a normal viewing distance, the surface should look like a fine-grained uniform texture, NOT like individual visible pebbles
-- Stone color: ${color.description}
-- The overall appearance is matte, smooth, and elegant — similar to fine sandpaper texture
-- NO visible large stones, NO coarse gravel look, NO loose pebble appearance
+RENDER FINISH — THIS IS THE MOST IMPORTANT PART:
+- Material: Professional exterior render/crépi (enduit de façade)
+- The finish is SMOOTH and UNIFORM — this is a modern thin-coat render, not rustic rough-cast
+- The texture is fine and consistent across the entire wall surface
+- Render color: ${color.description}
+- The overall appearance is matte and elegant, with a subtle fine grain that catches light uniformly
+- NO brush strokes, NO uneven patches, NO rough or pebble-dash texture
+- The render covers the entire existing wall surface seamlessly, hiding the old material underneath
 
 LIGHTING:
 - Match the sun direction and shadow angles from the original photo
-- The fine-grained surface should have a subtle, uniform sheen where direct sunlight hits
-- Maintain natural shadow gradients consistent with the original scene
+- The smooth render surface should have a subtle, uniform sheen where direct sunlight hits
+- Maintain natural shadow gradients at wall edges and architectural details
 
-The goal is a photorealistic visualization of a terrace resurfaced with a ${color.value} fine resin-bound stone finish (moquette de pierre).`
+The goal is a photorealistic visualization of a house facade renovated with a ${color.value} smooth exterior render finish (crépi).`
 }
 
 // Rotating tips, facts, and client reviews
 const LOADING_MESSAGES = [
   // Client reviews
-  { type: "review" as const, text: "On ne reconnaît plus notre terrasse, c'est magnifique !", author: "Marie", location: "Liège" },
+  { type: "review" as const, text: "On ne reconnaît plus notre maison, c'est comme une construction neuve !", author: "Marie", location: "Liège" },
   { type: "review" as const, text: "Le résultat est exactement ce qu'on avait vu sur la visualisation. Bluffant.", author: "Paul", location: "Luxembourg" },
-  { type: "review" as const, text: "Nos voisins nous demandent tous l'adresse ! Merci Resilux.", author: "Sophie", location: "Namur" },
-  { type: "review" as const, text: "Terrasse posée en une journée, propre et sans poussière. Top.", author: "Thomas", location: "Arlon" },
-  { type: "review" as const, text: "On hésitait entre carrelage et résine. Zéro regret, la résine c'est autre chose.", author: "Catherine", location: "Bruxelles" },
-  { type: "review" as const, text: "3 ans après la pose, toujours comme neuf. Qualité au rendez-vous.", author: "Marc", location: "Wavre" },
-  { type: "review" as const, text: "L'outil de visualisation nous a convaincus. On a choisi Gris anthracite, c'est sublime.", author: "Isabelle", location: "Esch-sur-Alzette" },
-  { type: "review" as const, text: "Fini les mauvaises herbes entre les dalles. La résine a tout changé.", author: "Jean-Pierre", location: "Mons" },
+  { type: "review" as const, text: "Nos voisins nous demandent tous l'adresse de l'entreprise ! Merci Resilux.", author: "Sophie", location: "Namur" },
+  { type: "review" as const, text: "Façade refaite en deux jours, propre et sans poussière. Top.", author: "Thomas", location: "Arlon" },
+  { type: "review" as const, text: "On hésitait entre plusieurs coloris. L'outil de visualisation nous a tout de suite convaincus.", author: "Catherine", location: "Bruxelles" },
+  { type: "review" as const, text: "5 ans après la pose, toujours comme neuf. Le crépi tient parfaitement.", author: "Marc", location: "Wavre" },
+  { type: "review" as const, text: "On a choisi Gris anthracite, c'est sublime. La maison a pris 20 ans de moins.", author: "Isabelle", location: "Esch-sur-Alzette" },
+  { type: "review" as const, text: "Fini les façades jaunies et fissuréees. Le crépi a tout transformé.", author: "Jean-Pierre", location: "Mons" },
   // Product facts
-  { type: "fact" as const, text: "La moquette de pierre est 100% perméable à l'eau — fini les flaques sur votre terrasse !" },
-  { type: "fact" as const, text: "Résistant au gel, aux UV et à l'usure — votre terrasse reste belle année après année." },
-  { type: "fact" as const, text: "Entretien minimal : un simple coup de jet d'eau ou de karcher suffit." },
-  { type: "fact" as const, text: "Pose rapide en 24 à 48h — votre terrasse est praticable dès le lendemain." },
-  { type: "fact" as const, text: "Surface antidérapante, idéale autour des piscines et pour les enfants." },
-  { type: "fact" as const, text: "Plus de 20 coloris disponibles pour s'adapter à tous les styles." },
-  { type: "fact" as const, text: "Compatible avec tous les supports : béton, carrelage, asphalte, bois..." },
-  { type: "fact" as const, text: "Un revêtement écologique : les granulats sont des pierres naturelles." },
+  { type: "fact" as const, text: "Le crépi extérieur protège vos murs contre les intempéries, l'humidité et le gel." },
+  { type: "fact" as const, text: "Résistant aux UV et aux variations thermiques — votre façade reste belle année après année." },
+  { type: "fact" as const, text: "Un enduit de façade bien posé peut durer 20 à 30 ans sans intervention majeure." },
+  { type: "fact" as const, text: "Rénover sa façade peut augmenter la valeur d'un bien immobilier jusqu'à 15%." },
+  { type: "fact" as const, text: "Le crépi est disponible en finition lisse, gratté ou taloché selon le style souhaité." },
+  { type: "fact" as const, text: "Plus de 50 coloris disponibles pour s'adapter à tous les styles architecturaux." },
+  { type: "fact" as const, text: "Compatible avec tous les supports : béton, brique, parpaing, ancien crépi..." },
+  { type: "fact" as const, text: "Un enduit minéral ou silicoxane assure une excellente résistance aux moisissures." },
   // Tips
   { type: "tip" as const, text: "Astuce : prenez votre photo en plein jour pour un résultat encore plus réaliste." },
   { type: "tip" as const, text: "Vous pouvez tester plusieurs coloris sur la même photo — essayez-les tous !" },
@@ -404,7 +403,7 @@ export function ImageEditForm() {
           <div className="text-center">
             <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
             <GlowAnimation />
-            <p className="text-gray-500 text-sm">L'IA qui sublime votre terrasse en un clic</p>
+            <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
           </div>
           <Card className="p-4">
             <SweepLoader image={QUICK_TEST_DEMO.before} />
@@ -426,7 +425,7 @@ export function ImageEditForm() {
           <div className="text-center">
             <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
             <GlowAnimation />
-            <p className="text-gray-500 text-sm">L'IA qui sublime votre terrasse en un clic</p>
+            <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
           </div>
 
           {/* Sweep animation on uploaded image */}
@@ -462,7 +461,7 @@ export function ImageEditForm() {
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
             <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
-            <p className="text-gray-500 text-sm">L'IA qui sublime votre terrasse en un clic</p>
+            <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
           </div>
 
           {/* Success banner */}
@@ -497,7 +496,7 @@ export function ImageEditForm() {
         <div className="text-center">
           <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
           {processing && <GlowAnimation />}
-          <p className="text-gray-500 text-sm">L'IA qui sublime votre terrasse en un clic</p>
+          <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
         </div>
 
         {/* Demo carousel (toggled) */}
