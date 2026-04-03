@@ -174,7 +174,7 @@ function RotatingMessages() {
           <div>
             <div className="flex gap-0.5 mb-2">
               {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-3.5 h-3.5 text-orange-400 fill-current" viewBox="0 0 20 20">
+                <svg key={i} className="w-3.5 h-3.5 text-blue-400 fill-current" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               ))}
@@ -247,7 +247,7 @@ function DemoCarousel({ autoPlay = false }: { autoPlay?: boolean }) {
                   key={i}
                   onClick={() => setCurrentIndex(i)}
                   className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                    i === currentIndex ? "bg-orange-500" : "bg-gray-300"
+                    i === currentIndex ? "bg-blue-500" : "bg-gray-300"
                   }`}
                 />
               ))}
@@ -442,7 +442,7 @@ export function ImageEditForm() {
           <Card className="p-4">
             <SweepLoader image={QUICK_TEST_DEMO.before} />
             <div className="flex items-center justify-center gap-2 mt-3">
-              <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
+              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
               <span className="text-sm text-gray-600">Génération de l'exemple...</span>
             </div>
           </Card>
@@ -466,7 +466,7 @@ export function ImageEditForm() {
           <Card className="p-4">
             <SweepLoader image={imagePreview} />
             <div className="flex items-center justify-center gap-2 mt-3">
-              <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
+              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
               <span className="text-sm text-gray-600">
                 Application du crépi <strong>{selectedTypeObj?.label}</strong> — <strong>{selectedColorObj?.label}</strong>...
               </span>
@@ -512,7 +512,7 @@ export function ImageEditForm() {
             <Button onClick={resetAll} variant="outline" className="w-full">
               Nouvelle Photo
             </Button>
-            <Button onClick={downloadImage} className="w-full bg-orange-600 hover:bg-orange-700">
+            <Button onClick={downloadImage} className="w-full bg-blue-600 hover:bg-blue-700">
               <Download className="mr-2 h-4 w-4" />
               Télécharger
             </Button>
@@ -574,7 +574,7 @@ export function ImageEditForm() {
               <button
                 onClick={handleQuickTest}
                 disabled={quickTestLoading}
-                className="w-full mt-3 text-sm text-gray-500 hover:text-orange-600 transition-colors flex items-center justify-center gap-1.5 py-1.5"
+                className="w-full mt-3 text-sm text-gray-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-1.5 py-1.5"
               >
                 {quickTestLoading ? (
                   <>
@@ -611,7 +611,7 @@ export function ImageEditForm() {
                 onClick={() => setSelectedType(type.value)}
                 className={`p-2 rounded-lg border-2 transition-all text-center ${
                   selectedType === type.value
-                    ? "border-orange-500 bg-orange-50"
+                    ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -644,7 +644,7 @@ export function ImageEditForm() {
                 onClick={() => setSelectedColor(color.value)}
                 className={`p-2 rounded-lg border-2 transition-all ${
                   selectedColor === color.value
-                    ? "border-orange-500 bg-orange-50"
+                    ? "border-blue-500 bg-blue-50"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
@@ -674,7 +674,7 @@ export function ImageEditForm() {
         <Button
           onClick={handleSubmit}
           disabled={loading || !processedImageData}
-          className="w-full h-12 text-base bg-orange-600 hover:bg-orange-700"
+          className="w-full h-12 text-base bg-blue-600 hover:bg-blue-700"
         >
           Appliquer le revêtement
         </Button>
@@ -683,7 +683,7 @@ export function ImageEditForm() {
         {!imagePreview && !showDemo && (
           <button
             onClick={() => setShowDemo(true)}
-            className="w-full flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-orange-600 transition-colors py-2"
+            className="w-full flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors py-2"
           >
             <Eye className="h-4 w-4" />
             Voir des exemples avant / après
@@ -705,7 +705,7 @@ function GlowAnimation() {
   return (
     <div className="relative flex justify-center">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-8">
-        <span className="block w-full h-full rounded-full bg-gradient-to-r from-orange-500 via-pink-500 to-blue-500 blur-2xl opacity-70 animate-glow" />
+        <span className="block w-full h-full rounded-full bg-gradient-to-r from-blue-400 via-blue-600 to-indigo-500 blur-2xl opacity-70 animate-glow" />
       </div>
     </div>
   )
