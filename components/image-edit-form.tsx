@@ -169,28 +169,28 @@ function RotatingMessages() {
 
   return (
     <div className={`transition-opacity duration-400 ${visible ? "opacity-100" : "opacity-0"}`}>
-      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+      <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-4">
         {msg.type === "review" ? (
           <div>
             <div className="flex gap-0.5 mb-2">
               {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-3.5 h-3.5 text-blue-400 fill-current" viewBox="0 0 20 20">
+                <svg key={i} className="w-3.5 h-3.5 text-yellow-400 fill-current" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               ))}
             </div>
-            <p className="text-sm text-gray-700 italic mb-2">"{msg.text}"</p>
-            <p className="text-xs text-gray-400">— {msg.author}, {msg.location}</p>
+            <p className="text-sm text-blue-100 italic mb-2">"{msg.text}"</p>
+            <p className="text-xs text-blue-300/60">— {msg.author}, {msg.location}</p>
           </div>
         ) : msg.type === "fact" ? (
           <div className="flex gap-3 items-start">
             <span className="text-lg flex-shrink-0">💡</span>
-            <p className="text-sm text-gray-600">{msg.text}</p>
+            <p className="text-sm text-blue-100">{msg.text}</p>
           </div>
         ) : (
           <div className="flex gap-3 items-start">
             <span className="text-lg flex-shrink-0">✨</span>
-            <p className="text-sm text-gray-600">{msg.text}</p>
+            <p className="text-sm text-blue-100">{msg.text}</p>
           </div>
         )}
       </div>
@@ -377,7 +377,7 @@ export function ImageEditForm() {
       const base64 = processedImageData.split(",")[1]
       const byteArray = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
       const blob = new Blob([byteArray], { type: "image/jpeg" })
-      const file = new File([blob], "terrace.jpg", { type: "image/jpeg" })
+      const file = new File([blob], "facade.jpg", { type: "image/jpeg" })
 
       const imageUrl = await fal.storage.upload(file)
 
@@ -410,7 +410,7 @@ export function ImageEditForm() {
     if (resultImage) {
       const link = document.createElement("a")
       link.href = resultImage
-      link.download = "terrasse-revetement.png"
+      link.download = "facade-crepi.png"
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -432,20 +432,20 @@ export function ImageEditForm() {
   // === QUICK TEST LOADING STATE ===
   if (quickTestLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
             <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
             <GlowAnimation />
-            <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
+            <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
           </div>
-          <Card className="p-4">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-4">
             <SweepLoader image={QUICK_TEST_DEMO.before} />
             <div className="flex items-center justify-center gap-2 mt-3">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-              <span className="text-sm text-gray-600">Génération de l'exemple...</span>
+              <Loader2 className="h-4 w-4 animate-spin text-blue-300" />
+              <span className="text-sm text-blue-100">Génération de l'exemple...</span>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     )
@@ -454,31 +454,31 @@ export function ImageEditForm() {
   // === LOADING STATE: sweep animation + demo carousel ===
   if (loading && imagePreview) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
             <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
             <GlowAnimation />
-            <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
+            <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
           </div>
 
           {/* Sweep animation on uploaded image */}
-          <Card className="p-4">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-4">
             <SweepLoader image={imagePreview} />
             <div className="flex items-center justify-center gap-2 mt-3">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-              <span className="text-sm text-gray-600">
+              <Loader2 className="h-4 w-4 animate-spin text-blue-300" />
+              <span className="text-sm text-blue-100">
                 Application du crépi <strong>{selectedTypeObj?.label}</strong> — <strong>{selectedColorObj?.label}</strong>...
               </span>
             </div>
-          </Card>
+          </div>
 
           {/* Rotating messages: reviews, facts, tips */}
           <RotatingMessages />
 
           {/* Demo carousel while waiting */}
           <div>
-            <p className="text-xs text-gray-400 text-center mb-2">
+            <p className="text-xs text-blue-300/60 text-center mb-2">
               Découvrez nos réalisations en attendant
             </p>
             <DemoCarousel autoPlay />
@@ -491,28 +491,28 @@ export function ImageEditForm() {
   // === RESULT READY STATE ===
   if (resultReady && resultImage && imagePreview) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
             <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
-            <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
+            <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
           </div>
 
           {/* Success banner */}
-          <div className="flex items-center justify-center gap-2 bg-green-50 border border-green-200 rounded-lg py-2.5 px-4">
-            <Check className="h-4 w-4 text-green-600" />
-            <span className="text-sm font-medium text-green-700">Votre visualisation est prête !</span>
+          <div className="flex items-center justify-center gap-2 bg-emerald-500/20 border border-emerald-400/30 rounded-xl py-2.5 px-4 backdrop-blur-sm">
+            <Check className="h-4 w-4 text-emerald-300" />
+            <span className="text-sm font-medium text-emerald-200">Votre visualisation est prête !</span>
           </div>
 
-          <Card className="p-3">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-3">
             <BeforeAfterSlider beforeImage={imagePreview} afterImage={resultImage} />
-          </Card>
+          </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Button onClick={resetAll} variant="outline" className="w-full">
+            <Button onClick={resetAll} variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
               Nouvelle Photo
             </Button>
-            <Button onClick={downloadImage} className="w-full bg-blue-600 hover:bg-blue-700">
+            <Button onClick={downloadImage} className="w-full bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/25">
               <Download className="mr-2 h-4 w-4" />
               Télécharger
             </Button>
@@ -524,31 +524,31 @@ export function ImageEditForm() {
 
   // === MAIN FORM STATE ===
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-5">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-4">
         {/* Header */}
         <div className="text-center">
           <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
           {processing && <GlowAnimation />}
-          <p className="text-gray-500 text-sm">L'IA qui sublime votre façade en un clic</p>
+          <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
         </div>
 
         {/* Demo carousel (toggled) */}
         {showDemo && (
           <div className="space-y-3">
             <DemoCarousel />
-            <Button onClick={() => setShowDemo(false)} variant="outline" className="w-full text-sm">
+            <Button onClick={() => setShowDemo(false)} variant="outline" className="w-full text-sm border-white/20 text-white hover:bg-white/10">
               Fermer les exemples
             </Button>
           </div>
         )}
 
         {/* Image upload / preview */}
-        <Card className="p-5">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
           {!imagePreview ? (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Photo de votre terrasse
+              <label className="block text-sm font-medium text-blue-100 mb-3">
+                Photo de votre façade
               </label>
               <input
                 type="file"
@@ -562,7 +562,7 @@ export function ImageEditForm() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={processing}
-                className="w-full flex items-center justify-center gap-2"
+                className="w-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-sm"
               >
                 {processing ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -574,7 +574,7 @@ export function ImageEditForm() {
               <button
                 onClick={handleQuickTest}
                 disabled={quickTestLoading}
-                className="w-full mt-3 text-sm text-gray-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-1.5 py-1.5"
+                className="w-full mt-3 text-sm text-blue-300/70 hover:text-white transition-colors flex items-center justify-center gap-1.5 py-1.5"
               >
                 {quickTestLoading ? (
                   <>
@@ -588,19 +588,19 @@ export function ImageEditForm() {
             </div>
           ) : (
             <div>
-              <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100 mb-3">
+              <div className="aspect-video w-full overflow-hidden rounded-xl bg-black/20 mb-3">
                 <img src={imagePreview} alt="Original" className="w-full h-full object-cover" />
               </div>
-              <Button onClick={resetAll} variant="outline" size="sm" className="w-full">
+              <Button onClick={resetAll} variant="outline" size="sm" className="w-full border-white/20 text-white hover:bg-white/10">
                 Changer de photo
               </Button>
             </div>
           )}
-        </Card>
+        </div>
 
         {/* Finish type selection */}
-        <Card className="p-5">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
+          <label className="block text-sm font-medium text-blue-100 mb-3">
             Type de finition
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -609,18 +609,18 @@ export function ImageEditForm() {
                 key={type.value}
                 type="button"
                 onClick={() => setSelectedType(type.value)}
-                className={`p-2 rounded-lg border-2 transition-all text-center ${
+                className={`p-2.5 rounded-xl border-2 transition-all text-center ${
                   selectedType === type.value
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-blue-400 bg-blue-500/30 text-white"
+                    : "border-white/10 hover:border-white/30 text-blue-200"
                 }`}
               >
-                <span className="text-xs font-medium text-gray-700">{type.label}</span>
+                <span className="text-xs font-medium">{type.label}</span>
               </button>
             ))}
           </div>
           {selectedTypeObj && (
-            <p className="mt-2 text-[11px] text-gray-400 leading-snug">{selectedTypeObj.label} — {
+            <p className="mt-2 text-[11px] text-blue-300/60 leading-snug">{selectedTypeObj.label} — {
               selectedTypeObj.value === "Gratté" ? "Surface striée fine et régulière" :
               selectedTypeObj.value === "Ecrasé" ? "Relief irrégulier et rustique" :
               selectedTypeObj.value === "Taloché" ? "Aspect semi-lisse et uniforme" :
@@ -629,12 +629,12 @@ export function ImageEditForm() {
               "Rainures parallèles régulières"
             }</p>
           )}
-        </Card>
+        </div>
 
         {/* Color selection */}
-        <Card className="p-5">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Coloris du revêtement
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
+          <label className="block text-sm font-medium text-blue-100 mb-3">
+            Coloris du crépi
           </label>
           <div className="grid grid-cols-4 gap-2">
             {STONE_COLORS.map((color) => (
@@ -642,17 +642,17 @@ export function ImageEditForm() {
                 key={color.value}
                 type="button"
                 onClick={() => setSelectedColor(color.value)}
-                className={`p-2 rounded-lg border-2 transition-all ${
+                className={`p-2 rounded-xl border-2 transition-all ${
                   selectedColor === color.value
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
+                    ? "border-blue-400 bg-blue-500/30"
+                    : "border-white/10 hover:border-white/30"
                 }`}
               >
                 <div
-                  className="w-10 h-10 rounded-full mx-auto mb-1.5 border border-gray-200"
+                  className="w-10 h-10 rounded-full mx-auto mb-1.5 border border-white/20 shadow-inner"
                   style={{ backgroundColor: color.color }}
                 />
-                <span className="text-[10px] leading-tight font-medium block text-center text-gray-700">
+                <span className="text-[10px] leading-tight font-medium block text-center text-blue-100">
                   {color.label}
                 </span>
               </button>
@@ -660,30 +660,30 @@ export function ImageEditForm() {
           </div>
 
           {selectedColorObj && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+            <div className="mt-3 flex items-center gap-2 text-sm text-blue-200">
               <div
-                className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
                 style={{ backgroundColor: selectedColorObj.color }}
               />
               <span>{selectedColorObj.label}</span>
             </div>
           )}
-        </Card>
+        </div>
 
         {/* Submit */}
         <Button
           onClick={handleSubmit}
           disabled={loading || !processedImageData}
-          className="w-full h-12 text-base bg-blue-600 hover:bg-blue-700"
+          className="w-full h-12 text-base bg-blue-500 hover:bg-blue-400 text-white rounded-xl shadow-lg shadow-blue-500/25 transition-all disabled:opacity-40 disabled:shadow-none"
         >
-          Appliquer le revêtement
+          Appliquer le crépi
         </Button>
 
         {/* Demo link */}
         {!imagePreview && !showDemo && (
           <button
             onClick={() => setShowDemo(true)}
-            className="w-full flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition-colors py-2"
+            className="w-full flex items-center justify-center gap-2 text-sm text-blue-300/60 hover:text-white transition-colors py-2"
           >
             <Eye className="h-4 w-4" />
             Voir des exemples avant / après
@@ -692,9 +692,9 @@ export function ImageEditForm() {
 
         {/* Error */}
         {error && (
-          <Card className="p-3 bg-red-50 border-red-200">
-            <div className="text-red-600 text-sm text-center">{error}</div>
-          </Card>
+          <div className="bg-red-500/20 border border-red-400/30 rounded-xl p-3 backdrop-blur-sm">
+            <div className="text-red-200 text-sm text-center">{error}</div>
+          </div>
         )}
       </div>
     </div>
