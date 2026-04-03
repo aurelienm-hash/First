@@ -22,6 +22,39 @@ const QUICK_TEST_DEMO = {
   after: "/demo-apres-3.png",
 }
 
+const CREPI_TYPES = [
+  {
+    value: "Gratté",
+    label: "Gratté",
+    description: "scraped render texture (crépi gratté): uniform fine-scratched surface with a consistent linear grain, achieved by scraping the render while still fresh. Small aggregates visible, giving a slightly rough but regular texture.",
+  },
+  {
+    value: "Ecrasé",
+    label: "Ecrasé",
+    description: "crushed render texture (crépi écrasé): irregular rough surface with visible crushed aggregates, natural rustic appearance with uneven relief and varied grain sizes.",
+  },
+  {
+    value: "Taloché",
+    label: "Taloché",
+    description: "floated render texture (crépi taloché): semi-smooth surface with a fine uniform circular pattern, achieved by floating the render. Slightly grainy but even, between smooth and rough finish.",
+  },
+  {
+    value: "Projeté",
+    label: "Projeté",
+    description: "spray-applied render texture (crépi projeté): irregular bumpy surface with randomly distributed small aggregates, applied by spraying. Uniform coverage with a natural rough relief.",
+  },
+  {
+    value: "Lissé",
+    label: "Lissé",
+    description: "smooth render finish (crépi lissé): perfectly flat and smooth surface with no visible grain or texture, clean and modern appearance.",
+  },
+  {
+    value: "Ribbé",
+    label: "Ribbé",
+    description: "ribbed render texture (crépi ribbé): regular parallel horizontal grooves creating a striped pattern, achieved with a comb tool. Uniform directional texture.",
+  },
+]
+
 const STONE_COLORS = [
   {
     value: "Blanc cassé",
@@ -67,7 +100,7 @@ const STONE_COLORS = [
   },
 ]
 
-function buildPrompt(color: typeof STONE_COLORS[number]) {
+function buildPrompt(color: typeof STONE_COLORS[number], type: typeof CREPI_TYPES[number]) {
   return `Edit this photo of a house exterior to apply a new professional render (crépi) finish on the facade walls only.
 
 CRITICAL RULES:
@@ -78,19 +111,17 @@ CRITICAL RULES:
 
 RENDER FINISH — THIS IS THE MOST IMPORTANT PART:
 - Material: Professional exterior render/crépi (enduit de façade)
-- The finish is SMOOTH and UNIFORM — this is a modern thin-coat render, not rustic rough-cast
-- The texture is fine and consistent across the entire wall surface
-- Render color: ${color.description}
-- The overall appearance is matte and elegant, with a subtle fine grain that catches light uniformly
-- NO brush strokes, NO uneven patches, NO rough or pebble-dash texture
+- Texture type: ${type.description}
+- Color: ${color.description}
 - The render covers the entire existing wall surface seamlessly, hiding the old material underneath
+- The texture must be consistent and uniform across the entire facade
 
 LIGHTING:
 - Match the sun direction and shadow angles from the original photo
-- The smooth render surface should have a subtle, uniform sheen where direct sunlight hits
+- The render surface texture should interact naturally with the light direction
 - Maintain natural shadow gradients at wall edges and architectural details
 
-The goal is a photorealistic visualization of a house facade renovated with a ${color.value} smooth exterior render finish (crépi).`
+The goal is a photorealistic visualization of a house facade renovated with a ${color.value} ${type.value.toLowerCase()} exterior render finish (crépi ${type.value.toLowerCase()}).`
 }
 
 // Rotating tips, facts, and client reviews
@@ -242,6 +273,7 @@ export function ImageEditForm() {
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState(STONE_COLORS[0].value)
+  const [selectedType, setSelectedType] = useState(CREPI_TYPES[0].value)
   const [showDemo, setShowDemo] = useState(false)
   const [resultReady, setResultReady] = useState(false)
   const [quickTestLoading, setQuickTestLoading] = useState(false)
@@ -339,6 +371,7 @@ export function ImageEditForm() {
     setResultReady(false)
 
     const color = STONE_COLORS.find((c) => c.value === selectedColor) || STONE_COLORS[0]
+    const type = CREPI_TYPES.find((t) => t.value === selectedType) || CREPI_TYPES[0]
 
     try {
       const base64 = processedImageData.split(",")[1]
@@ -350,7 +383,7 @@ export function ImageEditForm() {
 
       const result = await fal.subscribe("fal-ai/nano-banana-2/edit", {
         input: {
-          prompt: buildPrompt(color),
+          prompt: buildPrompt(color, type),
           image_urls: [imageUrl],
           output_format: "png",
         },
@@ -394,6 +427,7 @@ export function ImageEditForm() {
   }
 
   const selectedColorObj = STONE_COLORS.find((c) => c.value === selectedColor)
+  const selectedTypeObj = CREPI_TYPES.find((t) => t.value === selectedType)
 
   // === QUICK TEST LOADING STATE ===
   if (quickTestLoading) {
@@ -434,7 +468,7 @@ export function ImageEditForm() {
             <div className="flex items-center justify-center gap-2 mt-3">
               <Loader2 className="h-4 w-4 animate-spin text-orange-500" />
               <span className="text-sm text-gray-600">
-                Application du revêtement <strong>{selectedColorObj?.label}</strong>...
+                Application du crépi <strong>{selectedTypeObj?.label}</strong> — <strong>{selectedColorObj?.label}</strong>...
               </span>
             </div>
           </Card>
@@ -561,6 +595,39 @@ export function ImageEditForm() {
                 Changer de photo
               </Button>
             </div>
+          )}
+        </Card>
+
+        {/* Finish type selection */}
+        <Card className="p-5">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Type de finition
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            {CREPI_TYPES.map((type) => (
+              <button
+                key={type.value}
+                type="button"
+                onClick={() => setSelectedType(type.value)}
+                className={`p-2 rounded-lg border-2 transition-all text-center ${
+                  selectedType === type.value
+                    ? "border-orange-500 bg-orange-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <span className="text-xs font-medium text-gray-700">{type.label}</span>
+              </button>
+            ))}
+          </div>
+          {selectedTypeObj && (
+            <p className="mt-2 text-[11px] text-gray-400 leading-snug">{selectedTypeObj.label} — {
+              selectedTypeObj.value === "Gratté" ? "Surface striée fine et régulière" :
+              selectedTypeObj.value === "Ecrasé" ? "Relief irrégulier et rustique" :
+              selectedTypeObj.value === "Taloché" ? "Aspect semi-lisse et uniforme" :
+              selectedTypeObj.value === "Projeté" ? "Bosses aléatoires projetées" :
+              selectedTypeObj.value === "Lissé" ? "Surface parfaitement plate" :
+              "Rainures parallèles régulières"
+            }</p>
           )}
         </Card>
 
