@@ -27,33 +27,121 @@ const CREPI_TYPES = [
     value: "Gratté",
     label: "Gratté",
     description: "scraped render texture (crépi gratté): uniform fine-scratched surface with a consistent linear grain, achieved by scraping the render while still fresh. Small aggregates visible, giving a slightly rough but regular texture.",
+    subtitle: "Surface striée fine et régulière",
   },
   {
     value: "Ecrasé",
     label: "Ecrasé",
     description: "crushed render texture (crépi écrasé): irregular rough surface with visible crushed aggregates, natural rustic appearance with uneven relief and varied grain sizes.",
+    subtitle: "Relief irrégulier et rustique",
   },
   {
     value: "Taloché",
     label: "Taloché",
     description: "floated render texture (crépi taloché): semi-smooth surface with a fine uniform circular pattern, achieved by floating the render. Slightly grainy but even, between smooth and rough finish.",
+    subtitle: "Aspect semi-lisse et uniforme",
   },
   {
     value: "Projeté",
     label: "Projeté",
     description: "spray-applied render texture (crépi projeté): irregular bumpy surface with randomly distributed small aggregates, applied by spraying. Uniform coverage with a natural rough relief.",
+    subtitle: "Bosses aléatoires projetées",
   },
   {
     value: "Lissé",
     label: "Lissé",
     description: "smooth render finish (crépi lissé): perfectly flat and smooth surface with no visible grain or texture, clean and modern appearance.",
+    subtitle: "Surface parfaitement plate",
   },
   {
     value: "Ribbé",
     label: "Ribbé",
     description: "ribbed render texture (crépi ribbé): regular parallel horizontal grooves creating a striped pattern, achieved with a comb tool. Uniform directional texture.",
+    subtitle: "Rainures parallèles régulières",
   },
 ]
+
+function TexturePreview({ type }: { type: string }) {
+  const size = 64
+  switch (type) {
+    case "Gratté":
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" className="rounded-lg">
+          <rect width="64" height="64" fill="#e8e0d4" />
+          {Array.from({ length: 20 }).map((_, i) => (
+            <line key={i} x1="0" y1={i * 3.2 + Math.sin(i) * 0.5} x2="64" y2={i * 3.2 + Math.cos(i) * 0.5} stroke="#cdc3b4" strokeWidth="0.8" opacity="0.7" />
+          ))}
+          {Array.from({ length: 40 }).map((_, i) => (
+            <circle key={`d${i}`} cx={Math.random() * 64} cy={Math.random() * 64} r="0.5" fill="#b8ad9c" opacity="0.5" />
+          ))}
+        </svg>
+      )
+    case "Ecrasé":
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" className="rounded-lg">
+          <rect width="64" height="64" fill="#d4c9b8" />
+          {Array.from({ length: 25 }).map((_, i) => (
+            <ellipse key={i} cx={8 + (i % 5) * 12 + Math.sin(i * 3) * 4} cy={6 + Math.floor(i / 5) * 13 + Math.cos(i * 2) * 3} rx={4 + Math.sin(i) * 2} ry={3 + Math.cos(i) * 1.5} fill="#c4b8a4" stroke="#b0a48e" strokeWidth="0.5" opacity="0.8" />
+          ))}
+          {Array.from({ length: 15 }).map((_, i) => (
+            <path key={`p${i}`} d={`M${10 + i * 4},${20 + Math.sin(i) * 15} q${3},${-2} ${5},${1}`} fill="none" stroke="#a89880" strokeWidth="0.6" opacity="0.5" />
+          ))}
+        </svg>
+      )
+    case "Taloché":
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" className="rounded-lg">
+          <rect width="64" height="64" fill="#e2dbd0" />
+          {Array.from({ length: 12 }).map((_, i) => (
+            <circle key={i} cx={10 + (i % 4) * 16} cy={10 + Math.floor(i / 4) * 18} r={8 + Math.sin(i) * 2} fill="none" stroke="#c8bfb2" strokeWidth="0.6" opacity="0.5" />
+          ))}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <path key={`a${i}`} d={`M${5 + i * 8},${32} a${10},${10} 0 0,1 ${12},${-4}`} fill="none" stroke="#d0c6b8" strokeWidth="0.8" opacity="0.4" />
+          ))}
+        </svg>
+      )
+    case "Projeté":
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" className="rounded-lg">
+          <rect width="64" height="64" fill="#c8a050" />
+          {Array.from({ length: 80 }).map((_, i) => (
+            <circle key={i} cx={Math.random() * 64} cy={Math.random() * 64} r={0.8 + Math.random() * 1.8} fill={Math.random() > 0.5 ? "#b8903c" : "#d4ad5e"} opacity={0.4 + Math.random() * 0.4} />
+          ))}
+          {Array.from({ length: 30 }).map((_, i) => (
+            <circle key={`s${i}`} cx={Math.random() * 64} cy={Math.random() * 64} r={0.3 + Math.random() * 0.6} fill="#a07830" opacity="0.6" />
+          ))}
+        </svg>
+      )
+    case "Lissé":
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" className="rounded-lg">
+          <defs>
+            <linearGradient id="lisse" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#f0e8d8" />
+              <stop offset="50%" stopColor="#ece4d2" />
+              <stop offset="100%" stopColor="#f2eade" />
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" fill="url(#lisse)" />
+          <rect width="64" height="64" fill="#e8dfd0" opacity="0.3" />
+        </svg>
+      )
+    case "Ribbé":
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" className="rounded-lg">
+          <rect width="64" height="64" fill="#e0dcd6" />
+          {Array.from({ length: 16 }).map((_, i) => (
+            <rect key={i} x="0" y={i * 4} width="64" height="2" fill="#ccc8c0" rx="0.5" opacity="0.7" />
+          ))}
+          {Array.from({ length: 16 }).map((_, i) => (
+            <rect key={`s${i}`} x="0" y={i * 4 + 2} width="64" height="1.5" fill="#d8d4cc" rx="0.5" opacity="0.4" />
+          ))}
+        </svg>
+      )
+    default:
+      return null
+  }
+}
 
 const STONE_COLORS = [
   {
@@ -603,31 +691,29 @@ export function ImageEditForm() {
           <label className="block text-sm font-medium text-blue-100 mb-3">
             Type de finition
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-3">
             {CREPI_TYPES.map((type) => (
               <button
                 key={type.value}
                 type="button"
                 onClick={() => setSelectedType(type.value)}
-                className={`p-2.5 rounded-xl border-2 transition-all text-center ${
+                className={`rounded-xl border-2 transition-all overflow-hidden ${
                   selectedType === type.value
-                    ? "border-blue-400 bg-blue-500/30 text-white"
-                    : "border-white/10 hover:border-white/30 text-blue-200"
+                    ? "border-blue-400 ring-2 ring-blue-400/30"
+                    : "border-white/10 hover:border-white/30"
                 }`}
               >
-                <span className="text-xs font-medium">{type.label}</span>
+                <div className="w-full flex justify-center pt-2 px-2">
+                  <TexturePreview type={type.value} />
+                </div>
+                <div className="p-2 text-center">
+                  <span className={`text-xs font-semibold block ${selectedType === type.value ? "text-white" : "text-blue-200"}`}>{type.label}</span>
+                </div>
               </button>
             ))}
           </div>
           {selectedTypeObj && (
-            <p className="mt-2 text-[11px] text-blue-300/60 leading-snug">{selectedTypeObj.label} — {
-              selectedTypeObj.value === "Gratté" ? "Surface striée fine et régulière" :
-              selectedTypeObj.value === "Ecrasé" ? "Relief irrégulier et rustique" :
-              selectedTypeObj.value === "Taloché" ? "Aspect semi-lisse et uniforme" :
-              selectedTypeObj.value === "Projeté" ? "Bosses aléatoires projetées" :
-              selectedTypeObj.value === "Lissé" ? "Surface parfaitement plate" :
-              "Rainures parallèles régulières"
-            }</p>
+            <p className="mt-3 text-[11px] text-blue-300/60 leading-snug text-center">{selectedTypeObj.subtitle}</p>
           )}
         </div>
 
