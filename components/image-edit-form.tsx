@@ -11,8 +11,8 @@ fal.config({ proxyUrl: "/api/fal/proxy" })
 
 // Image used for "Je n'ai pas de photo" quick test
 const QUICK_TEST_DEMO = {
-  before: "/demo-facade-avant.jpg",
-  after: "/demo-facade-apres.jpg",
+  before: "/Les-maisons-les-plus-moches.jpg",
+  after: "/facade-crepi.png",
 }
 
 const CREPI_TYPES = [
