@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { fal } from "@fal-ai/client"
 import { Button } from "@/components/ui/button"
-import { Loader2, Upload, Download, Check } from "lucide-react"
+import { Loader2, Upload, Download, Check, Home } from "lucide-react"
 import { BeforeAfterSlider } from "./before-after-slider"
 
 fal.config({ proxyUrl: "/api/fal/proxy" })
@@ -175,7 +175,7 @@ function RotatingMessages() {
 
   return (
     <div className={`transition-opacity duration-400 ${visible ? "opacity-100" : "opacity-0"}`}>
-      <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-4">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
         {msg.type === "review" ? (
           <div>
             <div className="flex gap-0.5 mb-2">
@@ -185,18 +185,18 @@ function RotatingMessages() {
                 </svg>
               ))}
             </div>
-            <p className="text-sm text-blue-100 italic mb-2">"{msg.text}"</p>
-            <p className="text-xs text-blue-300/60">— {msg.author}, {msg.location}</p>
+            <p className="text-sm text-gray-700 italic mb-2">"{msg.text}"</p>
+            <p className="text-xs text-gray-400">— {msg.author}, {msg.location}</p>
           </div>
         ) : msg.type === "fact" ? (
           <div className="flex gap-3 items-start">
             <span className="text-lg flex-shrink-0">💡</span>
-            <p className="text-sm text-blue-100">{msg.text}</p>
+            <p className="text-sm text-gray-600">{msg.text}</p>
           </div>
         ) : (
           <div className="flex gap-3 items-start">
             <span className="text-lg flex-shrink-0">✨</span>
-            <p className="text-sm text-blue-100">{msg.text}</p>
+            <p className="text-sm text-gray-600">{msg.text}</p>
           </div>
         )}
       </div>
@@ -384,15 +384,13 @@ export function ImageEditForm() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
-            <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
-            <GlowAnimation />
-            <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
+            <AppLogo />
           </div>
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
             <SweepLoader image={QUICK_TEST_DEMO.before} />
             <div className="flex items-center justify-center gap-2 mt-3">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-300" />
-              <span className="text-sm text-blue-100">Génération de l'exemple...</span>
+              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+              <span className="text-sm text-gray-500">Génération de l'exemple...</span>
             </div>
           </div>
         </div>
@@ -400,29 +398,25 @@ export function ImageEditForm() {
     )
   }
 
-  // === LOADING STATE: sweep animation + demo carousel ===
+  // === LOADING STATE ===
   if (loading && imagePreview) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
-            <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
-            <GlowAnimation />
-            <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
+            <AppLogo />
           </div>
 
-          {/* Sweep animation on uploaded image */}
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
             <SweepLoader image={imagePreview} />
             <div className="flex items-center justify-center gap-2 mt-3">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-300" />
-              <span className="text-sm text-blue-100">
+              <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+              <span className="text-sm text-gray-500">
                 Application du crépi <strong>{selectedTypeObj?.label}</strong> — <strong>{selectedColorObj?.label}</strong>...
               </span>
             </div>
           </div>
 
-          {/* Rotating messages: reviews, facts, tips */}
           <RotatingMessages />
 
         </div>
@@ -436,25 +430,23 @@ export function ImageEditForm() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
-            <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
-            <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
+            <AppLogo />
           </div>
 
-          {/* Success banner */}
-          <div className="flex items-center justify-center gap-2 bg-emerald-500/20 border border-emerald-400/30 rounded-xl py-2.5 px-4 backdrop-blur-sm">
-            <Check className="h-4 w-4 text-emerald-300" />
-            <span className="text-sm font-medium text-emerald-200">Votre visualisation est prête !</span>
+          <div className="flex items-center justify-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl py-2.5 px-4">
+            <Check className="h-4 w-4 text-emerald-600" />
+            <span className="text-sm font-medium text-emerald-700">Votre visualisation est prête !</span>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-3">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-3">
             <BeforeAfterSlider beforeImage={imagePreview} afterImage={resultImage} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Button onClick={resetAll} variant="outline" className="w-full border-white/20 text-white hover:bg-white/10">
+            <Button onClick={resetAll} variant="outline" className="w-full">
               Nouvelle Photo
             </Button>
-            <Button onClick={downloadImage} className="w-full bg-blue-500 hover:bg-blue-400 text-white shadow-lg shadow-blue-500/25">
+            <Button onClick={downloadImage} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
               <Download className="mr-2 h-4 w-4" />
               Télécharger
             </Button>
@@ -470,17 +462,15 @@ export function ImageEditForm() {
       <div className="w-full max-w-md space-y-4">
         {/* Header */}
         <div className="text-center">
-          <img src="/logo-resiluxai.png" alt="Logo ResiluxAI" className="mx-auto mb-1 w-28 h-28 object-contain" />
+          <AppLogo />
           {processing && <GlowAnimation />}
-          <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
         </div>
 
-
         {/* Image upload / preview */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
           {!imagePreview ? (
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Photo de votre façade
               </label>
               <input
@@ -495,7 +485,7 @@ export function ImageEditForm() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={processing}
-                className="w-full flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-sm"
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
               >
                 {processing ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -507,7 +497,7 @@ export function ImageEditForm() {
               <button
                 onClick={handleQuickTest}
                 disabled={quickTestLoading}
-                className="w-full mt-3 text-sm text-blue-300/70 hover:text-white transition-colors flex items-center justify-center gap-1.5 py-1.5"
+                className="w-full mt-3 text-sm text-gray-400 hover:text-blue-600 transition-colors flex items-center justify-center gap-1.5 py-1.5"
               >
                 {quickTestLoading ? (
                   <>
@@ -521,10 +511,10 @@ export function ImageEditForm() {
             </div>
           ) : (
             <div>
-              <div className="aspect-video w-full overflow-hidden rounded-xl bg-black/20 mb-3">
+              <div className="aspect-video w-full overflow-hidden rounded-xl bg-gray-100 mb-3">
                 <img src={imagePreview} alt="Original" className="w-full h-full object-cover" />
               </div>
-              <Button onClick={resetAll} variant="outline" size="sm" className="w-full border-white/20 text-white hover:bg-white/10">
+              <Button onClick={resetAll} variant="outline" size="sm" className="w-full">
                 Changer de photo
               </Button>
             </div>
@@ -532,8 +522,8 @@ export function ImageEditForm() {
         </div>
 
         {/* Finish type selection */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
-          <label className="block text-sm font-medium text-blue-100 mb-3">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
             Type de finition
           </label>
           <div className="grid grid-cols-3 gap-3">
@@ -544,27 +534,27 @@ export function ImageEditForm() {
                 onClick={() => setSelectedType(type.value)}
                 className={`rounded-xl border-2 transition-all overflow-hidden ${
                   selectedType === type.value
-                    ? "border-blue-400 ring-2 ring-blue-400/30"
-                    : "border-white/10 hover:border-white/30"
+                    ? "border-blue-500 ring-2 ring-blue-500/20 shadow-md"
+                    : "border-gray-200 hover:border-gray-300"
                 }`}
               >
                 <div className="w-full aspect-square overflow-hidden">
                   <img src={type.image} alt={type.label} className="w-full h-full object-cover" />
                 </div>
-                <div className="p-2 text-center">
-                  <span className={`text-xs font-semibold block ${selectedType === type.value ? "text-white" : "text-blue-200"}`}>{type.label}</span>
+                <div className="p-2 text-center bg-gray-50">
+                  <span className={`text-xs font-semibold block ${selectedType === type.value ? "text-blue-600" : "text-gray-600"}`}>{type.label}</span>
                 </div>
               </button>
             ))}
           </div>
           {selectedTypeObj && (
-            <p className="mt-3 text-[11px] text-blue-300/60 leading-snug text-center">{selectedTypeObj.subtitle}</p>
+            <p className="mt-3 text-[11px] text-gray-400 leading-snug text-center">{selectedTypeObj.subtitle}</p>
           )}
         </div>
 
         {/* Color selection */}
-        <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
-          <label className="block text-sm font-medium text-blue-100 mb-3">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
             Coloris du crépi
           </label>
           <div className="grid grid-cols-4 gap-2">
@@ -575,15 +565,15 @@ export function ImageEditForm() {
                 onClick={() => setSelectedColor(color.value)}
                 className={`p-2 rounded-xl border-2 transition-all ${
                   selectedColor === color.value
-                    ? "border-blue-400 bg-blue-500/30"
-                    : "border-white/10 hover:border-white/30"
+                    ? "border-blue-500 bg-blue-50 shadow-md"
+                    : "border-gray-200 hover:border-gray-300"
                 }`}
               >
                 <div
-                  className="w-10 h-10 rounded-full mx-auto mb-1.5 border border-white/20 shadow-inner"
+                  className="w-10 h-10 rounded-full mx-auto mb-1.5 border border-gray-200 shadow-inner"
                   style={{ backgroundColor: color.color }}
                 />
-                <span className="text-[10px] leading-tight font-medium block text-center text-blue-100">
+                <span className="text-[10px] leading-tight font-medium block text-center text-gray-600">
                   {color.label}
                 </span>
               </button>
@@ -591,9 +581,9 @@ export function ImageEditForm() {
           </div>
 
           {selectedColorObj && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-blue-200">
+            <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
               <div
-                className="w-4 h-4 rounded-full border border-white/20 flex-shrink-0"
+                className="w-4 h-4 rounded-full border border-gray-200 flex-shrink-0"
                 style={{ backgroundColor: selectedColorObj.color }}
               />
               <span>{selectedColorObj.label}</span>
@@ -605,18 +595,31 @@ export function ImageEditForm() {
         <Button
           onClick={handleSubmit}
           disabled={loading || !processedImageData}
-          className="w-full h-12 text-base bg-blue-500 hover:bg-blue-400 text-white rounded-xl shadow-lg shadow-blue-500/25 transition-all disabled:opacity-40 disabled:shadow-none"
+          className="w-full h-12 text-base bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-600/20 transition-all disabled:opacity-40 disabled:shadow-none"
         >
           Appliquer le crépi
         </Button>
 
-
         {/* Error */}
         {error && (
-          <div className="bg-red-500/20 border border-red-400/30 rounded-xl p-3 backdrop-blur-sm">
-            <div className="text-red-200 text-sm text-center">{error}</div>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+            <div className="text-red-600 text-sm text-center">{error}</div>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+function AppLogo() {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20">
+        <Home className="w-8 h-8 text-white" />
+      </div>
+      <div>
+        <h1 className="text-xl font-bold text-gray-900">FaçadeAI</h1>
+        <p className="text-gray-400 text-sm">Visualisez votre façade rénovée</p>
       </div>
     </div>
   )
