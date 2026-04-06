@@ -1,25 +1,18 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect } from "react"
 import { fal } from "@fal-ai/client"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Loader2, Upload, Download, Eye, ChevronLeft, ChevronRight, Check } from "lucide-react"
+import { Loader2, Upload, Download, Check } from "lucide-react"
 import { BeforeAfterSlider } from "./before-after-slider"
 
 fal.config({ proxyUrl: "/api/fal/proxy" })
 
-const DEMOS = [
-  { before: "/demo-avant.jpg", after: "/demo-apres.png", label: "Allée de garage" },
-  { before: "/demo-avant-2.png", after: "/demo-apres-2.png", label: "Terrasse jardin" },
-  { before: "/demo-avant-3.jpg", after: "/demo-apres-3.png", label: "Terrasse complète" },
-]
-
 // Image used for "Je n'ai pas de photo" quick test
 const QUICK_TEST_DEMO = {
-  before: "/demo-avant-3.jpg",
-  after: "/demo-apres-3.png",
+  before: "/demo-facade-avant.jpg",
+  after: "/demo-facade-apres.jpg",
 }
 
 const CREPI_TYPES = [
@@ -221,62 +214,6 @@ function SweepLoader({ image }: { image: string }) {
   )
 }
 
-// Demo carousel that auto-plays
-function DemoCarousel({ autoPlay = false }: { autoPlay?: boolean }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-
-  const next = useCallback(() => {
-    setCurrentIndex((i) => (i + 1) % DEMOS.length)
-  }, [])
-
-  const prev = useCallback(() => {
-    setCurrentIndex((i) => (i - 1 + DEMOS.length) % DEMOS.length)
-  }, [])
-
-  useEffect(() => {
-    if (!autoPlay) return
-    const interval = setInterval(next, 5000)
-    return () => clearInterval(interval)
-  }, [autoPlay, next])
-
-  const demo = DEMOS[currentIndex]
-
-  return (
-    <div className="space-y-3">
-      <Card className="p-3 overflow-hidden">
-        <BeforeAfterSlider beforeImage={demo.before} afterImage={demo.after} />
-        <div className="flex items-center justify-between mt-3">
-          <button
-            onClick={prev}
-            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4 text-gray-500" />
-          </button>
-          <div className="text-center">
-            <span className="text-xs font-medium text-gray-600">{demo.label}</span>
-            <div className="flex gap-1.5 justify-center mt-1.5">
-              {DEMOS.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentIndex(i)}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                    i === currentIndex ? "bg-blue-500" : "bg-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={next}
-            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <ChevronRight className="h-4 w-4 text-gray-500" />
-          </button>
-        </div>
-      </Card>
-    </div>
-  )
-}
 
 export function ImageEditForm() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -287,7 +224,6 @@ export function ImageEditForm() {
   const [error, setError] = useState<string | null>(null)
   const [selectedColor, setSelectedColor] = useState(STONE_COLORS[0].value)
   const [selectedType, setSelectedType] = useState(CREPI_TYPES[0].value)
-  const [showDemo, setShowDemo] = useState(false)
   const [resultReady, setResultReady] = useState(false)
   const [quickTestLoading, setQuickTestLoading] = useState(false)
 
@@ -489,13 +425,6 @@ export function ImageEditForm() {
           {/* Rotating messages: reviews, facts, tips */}
           <RotatingMessages />
 
-          {/* Demo carousel while waiting */}
-          <div>
-            <p className="text-xs text-blue-300/60 text-center mb-2">
-              Découvrez nos réalisations en attendant
-            </p>
-            <DemoCarousel autoPlay />
-          </div>
         </div>
       </div>
     )
@@ -546,15 +475,6 @@ export function ImageEditForm() {
           <p className="text-blue-200 text-sm">L'IA qui sublime votre façade en un clic</p>
         </div>
 
-        {/* Demo carousel (toggled) */}
-        {showDemo && (
-          <div className="space-y-3">
-            <DemoCarousel />
-            <Button onClick={() => setShowDemo(false)} variant="outline" className="w-full text-sm border-white/20 text-white hover:bg-white/10">
-              Fermer les exemples
-            </Button>
-          </div>
-        )}
 
         {/* Image upload / preview */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-5">
@@ -690,16 +610,6 @@ export function ImageEditForm() {
           Appliquer le crépi
         </Button>
 
-        {/* Demo link */}
-        {!imagePreview && !showDemo && (
-          <button
-            onClick={() => setShowDemo(true)}
-            className="w-full flex items-center justify-center gap-2 text-sm text-blue-300/60 hover:text-white transition-colors py-2"
-          >
-            <Eye className="h-4 w-4" />
-            Voir des exemples avant / après
-          </button>
-        )}
 
         {/* Error */}
         {error && (
