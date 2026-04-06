@@ -232,7 +232,7 @@ export function ImageEditForm() {
   const handleQuickTest = async () => {
     setQuickTestLoading(true)
     setError(null)
-    setShowDemo(false)
+
 
     // Fake loading for 3 seconds to simulate processing
     await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -293,7 +293,7 @@ export function ImageEditForm() {
       setError(null)
       setResultImage(null)
       setProcessing(true)
-      setShowDemo(false)
+  
       setResultReady(false)
 
       try {
@@ -371,7 +371,7 @@ export function ImageEditForm() {
     setProcessedImageData(null)
     setResultImage(null)
     setError(null)
-    setShowDemo(false)
+
     setResultReady(false)
   }
 
